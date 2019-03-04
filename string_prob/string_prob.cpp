@@ -9,7 +9,7 @@ using std::vector;
 using std::string;
 
 solution test_instance;//所有测试使用该实例
-
+/*
 static const auto io_sync_off = []()
 {
 	// turn off sync
@@ -17,7 +17,7 @@ static const auto io_sync_off = []()
 	// untie in/out streams
 	std::cin.tie(nullptr);
 	return nullptr;
-}();
+}();*/
 // 测试回文判断算法
 void test_palindrome() {
 	vector<string> samples{ "A man, a plan, a canal: Panama",
@@ -49,6 +49,10 @@ void test_word_break_bf() {
 }
 
 void test_word_break() {
+	string sentence0 = "applepenapple";
+	vector<string> word_dict0{ "apple","pen" };
+	assert(test_instance.word_break(sentence0, word_dict0));
+
 	string sentence = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 		"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 		"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab";
@@ -71,12 +75,25 @@ void test_word_break() {
 	assert(!test_instance.word_break(sentence3, word_dict3));
 }
 
+void test_word_break_sentence() {
+	string sentence2 = "acaaaaabbbdbcccdcdaadcdccacbcccabbbbcdaaaaaadb";
+	vector<string> word_dict2{ "abbcbda","cbdaaa","b","dadaaad","dccbbbc","dccadd","ccbdbc","bbca",
+		"bacbcdd","a","bacb","cbc","adc","c","cbdbcad","cdbab","db","abbcdbd","bcb","bbdab","aa","bcadb",
+		"bacbcb","ca","dbdabdb","ccd","acbb","bdc","acbccd","d","cccdcda","dcbd","cbccacd","ac","cca","aaddc",
+		"dccac","ccdc","bbbbcda","ba","adbcadb","dca","abd","bdbb","ddadbad","badb","ab","aaaaa","acba","abbb" };
+	string s = "pineapplepenapple";
+	vector<string> word_dict{ "apple", "pen", "applepen", "pine", "pineapple" };
+	auto result = test_instance.word_break_sentence(s, word_dict);
+	for (const auto &sen : result)
+		std::cout << sen << std::endl;
 
+}
 int main() {
 
 	std::cout << "start testing" << std::endl;
 	//test_palindrome();
 	//test_word_break_bf();
 	//test_instance.partition(string(10, 'n'));
-	test_word_break();
+	//test_word_break();
+	test_word_break_sentence();
 }

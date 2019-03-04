@@ -5,8 +5,10 @@
 #include<cassert>
 #include<optional>
 #include<unordered_map>
+#include<unordered_set>
 #include<list>
 
+using std::unordered_set;
 using std::list;
 using std::unordered_map;
 using std::optional;
@@ -65,7 +67,11 @@ bool solution::is_palindrome(std::string s)
 
 #define IS_ODD(num) num%2==1
 // 将长度未len的序列 分为[0,first_end),(second_end,second_start]
-void sperate(size_t len, size_t& first_end, size_t& second_end) {
+void sperate(
+	size_t len,
+	size_t& first_end,
+	size_t& second_end)
+{
 	assert(len != 0);
 	if (IS_ODD(len)) {
 		first_end = second_end = len / 2;
@@ -249,14 +255,11 @@ bool solution::word_break_bf(
 	string s,
 	vector<string>& word_dict)
 {
-	// 第一步构建自动机
-	// 第二步识别
-	// 自动机识别会导致状态爆炸
+	if (s.empty() || word_dict.empty())return false;
 	char chs[26]{ 0 };
 	word_ch_count(word_dict, chs);
 	if (!can_combine(s, chs))return false;
 
-	if (s.empty() || word_dict.empty())return false;
 	str_node root;
 	do_search(s.cbegin(), s.cend(), root, word_dict);
 	//tree result(root);
@@ -265,22 +268,78 @@ bool solution::word_break_bf(
 
 // 动态规划法求解单词分割
 // 核心想法： 判断一个串能否被分解，可以考虑每个原串的每个可分解的字串，串的剩余部分若在word_dict中则可分解
-bool solution::word_break(std::string s, std::vector<std::string>& word_dict)
+vector<bool> do_break(
+	const string& s,	//源串
+	const vector<string> &word_dict)
 {
 	vector<bool> sub_break(s.size() + 1, false);
 	sub_break[0] = true;
-	for (int i = 1; i <= s.size(); i++)
-		for (int j = 0; j < i; j++) {
+	std::unordered_set<string> word_set(word_dict.cbegin(), word_dict.cend());	//优化
+	auto max_len = std::max_element(word_dict.cbegin(), word_dict.cend(),
+		[](const string &a, const string&b) {return a.size() < b.size(); })->size();
+	for (size_t i = 0; i < s.size(); i++)
+		for (size_t j = 0; j < std::min(max_len, i + 1); j++) {
 			// 这里可以优化
-			if (sub_break[j] && std::find(word_dict.cbegin(), word_dict.cend(), string(s.cbegin() + j, s.cbegin() + i)) != word_dict.cend()) {
-				sub_break[i] = true;
+			if (sub_break[i - j] && word_set.find(s.substr(i - j, j + 1)) != word_set.cend()) {
+				sub_break[i + 1] = true;
 				break;
 			}
 		}
+	return sub_break;
+}
+bool solution::word_break(
+	std::string s,
+	std::vector<std::string>& word_dict)
+{
+	if (s.empty() || word_dict.empty())return false;
+	auto sub_break = do_break(s, word_dict);
 	return sub_break.back();
 }
-
-vector<string> solution::word_break_sentence(std::string s, std::vector<std::string>& wordDict)
+// 将动态规划的计算结果合并 
+// 基本想法: 
+void gen_sentence(
+	size_t back,
+	string current_sentence,
+	const string &origin,
+	vector<string> &result,
+	const vector<size_t> &break_index,
+	const vector<string> &word_dict
+) {
+	if (back == 0) {
+		result.push_back(current_sentence);
+		return;
+	}
+	auto curr = back;
+	while (curr-- != 0) {
+		auto sub = origin.substr(break_index[curr], break_index[back] - break_index[curr]);
+		if (std::find(word_dict.cbegin(), word_dict.cend(), sub) != word_dict.cend()) {
+			gen_sentence(curr, sub + " " + current_sentence, origin, result, break_index, word_dict);
+		}
+	}
+}
+void item_to_index(
+	vector<bool>& items,
+	vector<size_t>& index)
 {
-	return vector<string>();
+	auto be = items.cbegin();
+	while (be != items.cend()) {
+		be = std::find(be, items.cend(), true);
+		if (be != items.cend())
+			index.push_back(be++ - items.cbegin());
+	}
+}
+vector<string> solution::word_break_sentence(
+	std::string s,
+	std::vector<std::string>& word_dict)
+{
+	if (s.empty() || word_dict.empty())return vector<string>();
+	auto sub_break = do_break(s, word_dict);
+	vector<string> result;
+	if (!sub_break.back())return result;
+	vector<size_t> break_index;
+	item_to_index(sub_break, break_index);
+
+	gen_sentence(break_index.size() - 1, string(), s, result, break_index, word_dict);
+	std::transform(result.begin(), result.end(), result.begin(), [](string a)->string { a.pop_back(); return a; });
+	return result;
 }
