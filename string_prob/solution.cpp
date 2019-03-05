@@ -7,7 +7,9 @@
 #include<unordered_map>
 #include<unordered_set>
 #include<list>
+#include<utility>
 
+using std::pair;
 using std::unordered_set;
 using std::list;
 using std::unordered_map;
@@ -16,6 +18,10 @@ using std::isalnum;
 using std::isdigit;
 using std::vector;
 using std::string;
+
+/*
+*	使用stl写出来的代码虽然简洁，但和其他人手写的效率会差很多
+*/
 
 /**************************************************************************************/
 
@@ -342,4 +348,86 @@ vector<string> solution::word_break_sentence(
 	gen_sentence(break_index.size() - 1, string(), s, result, break_index, word_dict);
 	std::transform(result.begin(), result.end(), result.begin(), [](string a)->string { a.pop_back(); return a; });
 	return result;
+}
+
+// 回文串分割
+std::vector<std::vector<std::string>> solution::partition(std::string s)
+{
+	vector<vector<string>> result;
+	if (s.empty())return result;
+	do_partition(s.cbegin(), s.cend(), vector<string>(), result);
+	return result;
+}
+// 深搜
+void solution::do_partition(
+	string::const_iterator be,
+	string::const_iterator end,
+	vector<string> current_partition,
+	vector<vector<string>>& result
+) {
+	if (be == end)
+		result.push_back(current_partition);
+	auto curr = be;
+	while (curr != end) {
+		if (is_palindrome(be, ++curr)) {
+			current_partition.emplace_back(be, curr);
+			do_partition(curr, end, current_partition, result);
+			current_partition.pop_back();
+		}
+	}
+}
+inline bool equal(int *be, int *end, int val) {
+	while (be != end) {
+		if (*be++ != val)
+			return false;
+	}
+	return true;
+}
+bool solution::is_anagram(std::string s, std::string t)
+{
+	if (s.size() != t.size())return false;
+	// 利用stl 暴力求解	
+	/*std::sort(s.begin(), s.end());
+	std::sort(t.begin(), t.end());
+	return std::equal(s.cbegin(), s.cend(), t.cbegin());*/
+	int count[26]{ 0 };	//假定不会出现绕回
+	size_t len = s.size(), i = 0;
+	while (i != len) {
+		++count[s[i] - 'a'];
+		--count[t[i] - 'a'];
+		i++;
+	}
+	//return std::all_of(count, count + 26, [](int a) {return a == 0; });
+	return equal(count, count + 26, 0);
+}
+
+int solution::first_uniq_char(string s)
+{
+	pair<size_t, size_t> count_pos[26]{ {0,0} };
+	for (int i = 0; i < s.size(); i++) {
+		count_pos[s[i] - 'a'].first++;
+		count_pos[s[i] - 'a'].second = i;
+	}
+	size_t index = s.size();
+	for (int i = 0; i < 26; i++) {
+		if (count_pos[i].first == 1 && index > count_pos[i].second)
+			index = count_pos[i].second;
+	}
+	return index == s.size() ? -1 : index;
+}
+inline void swap(char &a, char &b) {
+	char buf;
+	buf = a, a = b, b = buf;
+}
+void solution::reverse_string(std::vector<char>& s)
+{
+	if (s.size() == 0 || s.size() == 1)return;
+	size_t forward_end, back_end;
+	sperate(s.size(), forward_end, back_end);
+	size_t f_be = 0, b_be = s.size() - 1;
+	assert(forward_end - f_be == b_be - back_end);
+	char buf;
+	while (f_be != forward_end) {
+		swap(s[f_be++], s[b_be--]);
+	}
 }

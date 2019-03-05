@@ -4,6 +4,7 @@
 #include"solution.h"
 #include<vector>
 #include<cassert>
+#include<algorithm>
 
 using std::vector;
 using std::string;
@@ -88,6 +89,44 @@ void test_word_break_sentence() {
 		std::cout << sen << std::endl;
 
 }
+
+void test_reverse_string() {
+	vector<char> test1{ 'h','e','l','l','o' };
+	vector<char> test1_result{ 'o','l','l','e','h' };
+	test_instance.reverse_string(test1);
+	assert(test1_result == test1);
+}
+
+void test_partition() {
+	string sentence = "aab";
+	vector<vector<string>> correct_result = { {"aa", "b"},{"a", "a", "b" } };
+	vector<vector<string>> cal_result;
+	cal_result = test_instance.partition(sentence);
+	for (const auto& d : cal_result)
+		for (const auto& st : d)
+			std::cout << st << " ";
+	std::sort(correct_result.begin(), correct_result.end());
+	std::sort(cal_result.begin(), cal_result.end());
+	assert(cal_result == correct_result);
+}
+
+void test_is_anagram() {
+	string s = "anagram";
+	string t = "nagaram";
+	assert(test_instance.is_anagram(s, t));
+
+	string s1 = "rat";
+	string s2 = "cat";
+	assert(!test_instance.is_anagram(s1, s2));
+}
+
+void test_first_uniq_char() {
+	string test1 = "leetcode";
+	string test2 = "loveleetcode";
+	std::cout << test_instance.first_uniq_char(test1) << std::endl;
+	assert(test_instance.first_uniq_char(test1) == 0);
+	assert(test_instance.first_uniq_char(test2) == 2);
+}
 int main() {
 
 	std::cout << "start testing" << std::endl;
@@ -95,5 +134,9 @@ int main() {
 	//test_word_break_bf();
 	//test_instance.partition(string(10, 'n'));
 	//test_word_break();
-	test_word_break_sentence();
+	//test_word_break_sentence();
+	//test_partition();
+	//test_is_anagram();
+	//test_first_uniq_char();
+	test_reverse_string();
 }
