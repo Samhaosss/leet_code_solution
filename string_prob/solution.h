@@ -17,6 +17,7 @@ public:
 	bool is_anagram(std::string s, std::string t);	//字母异位词判断
 	int first_uniq_char(std::string s);
 	void reverse_string(std::vector<char>& s);
+	std::vector<std::string> find_words(std::vector<std::vector<char>>& board, std::vector<std::string>& words);
 private:
 	void do_partition(
 		std::string::const_iterator be,

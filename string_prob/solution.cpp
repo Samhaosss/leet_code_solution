@@ -1,5 +1,7 @@
 ﻿#include "pch.h"
 #include "solution.h"
+#include"trie.h"
+
 #include<cctype>
 #include<algorithm>
 #include<cassert>
@@ -430,4 +432,169 @@ void solution::reverse_string(std::vector<char>& s)
 	while (f_be != forward_end) {
 		swap(s[f_be++], s[b_be--]);
 	}
+}
+
+using pos_t = std::pair<size_t, size_t>;
+/*
+class trip_node {
+public:
+	trip_node(bool is_word) :is_word(is_word) {}
+	trip_node() = default;
+	void add(char ke, const trip_node& _son) {
+		if (!has_key(ke))
+			son[ke] = _son;
+	}
+	trip_node& get(char key) {
+		if (!has_key(key)) {
+			throw "err";
+		}
+		return son[key];
+	}
+	bool has_key(char ke) {
+		return son.find(ke) != son.cend();
+	}
+	bool word() {
+		return this->is_word;
+	}
+
+private:
+	bool is_word;
+	unordered_map<char, trip_node> son;
+};
+// 前缀树的实现还存在问题 实现前缀树后 搜索算法会更搞笑
+class trip {
+public:
+	trip(const vector<string> &data) :root(false) {
+		construct(data);
+	}
+	void add_sentence(const string &str) {
+		do_add(root, str.cbegin(), str.cend());
+	}
+	bool is_prefix(const string &str) {
+		auto result = move(str);
+		return result.first;
+	}
+	bool is_word(const string &str) {
+		auto result = move(str);
+		return result.first && result.second.word();
+	}
+
+private:
+	trip_node root;
+	pair<bool, trip_node> move(const string &str) {
+		auto st = str.cbegin(), ed = str.cend();
+		auto current_node = root;
+		while (st != ed) {
+			if (!current_node.has_key(*st))return { false,{} };
+			current_node = current_node.get(*st++);
+		}
+		return { true,current_node };
+	}
+	void construct(const vector<string> &data) {
+		for (const auto &str : data)
+			add_sentence(str);
+	}
+	void do_add(trip_node &node, string::const_iterator be, string::const_iterator ed) {
+		if (be == ed)return;
+		char ch = *be;
+		if (!node.has_key(ch)) {
+			node.add(ch, trip_node(be + 1 == ed));
+		}
+		do_add(node.get(ch), ++be, ed);
+	}
+
+};
+*/
+inline bool in_range(int a, int b, int c) {
+	return b >= a && b < c;
+}
+// 接受一个坐标和一个坐标范围，返回坐标可能移动至的点
+vector<pos_t> feasible_ch(pos_t pos, pos_t range) {
+	// 传入的坐标为无符号数 需要做一些处理
+	using pair_int = pair<int, int>;
+	pair_int pos_int{ pos.first,pos.second }, range_int{ range.first,range.second };//假设可以直接转换
+	pair_int move[4]{ {1,0},{0,1},{-1,0},{0,-1} };
+	vector<pos_t> result;
+	for (const auto &ne : move) {
+		auto x = pos_int.first + ne.first, y = pos_int.second + ne.second;
+		if (in_range(0, x, range_int.first)
+			&& in_range(0, y, range_int.second))
+			result.emplace_back((size_t)x, (size_t)y);
+	}
+	return result;
+}
+inline char index(const vector<vector<char>> &board, const pos_t &pos) {
+	return board[pos.first][pos.second];
+}
+
+inline bool is_any_prefix(const unordered_set<string>& words, const string& word) {
+	auto be = word.cbegin(), end = word.cend();
+	for (const auto &w : words) {
+		if (prefix(be, end, w.cbegin(), w.cend())) {
+			return true;
+		}
+	}
+	return false;
+}
+
+void do_find(
+	pos_t entry,
+	string current_str,
+	size_t deep,
+	vector<pos_t> path,
+	unordered_set<string> &result,
+	const vector<vector<char>> &board,
+	trie &words
+) {
+	current_str.push_back(index(board, entry));
+	if (!words.start_with(current_str))return;
+	if (words.search(current_str) && result.find(current_str) == result.cend())
+		result.insert(current_str);
+	/*if (!is_any_prefix(words, current_str))
+		return;
+	if (words.find(current_str) != words.cend() && result.find(current_str) == result.cend())
+		result.insert(current_str);*/
+		// 到达最底层 不进行搜索
+	if (deep-- == 1) {
+		return;
+	}
+	auto feasible = feasible_ch(entry, { board.size(),board[0].size() });
+	for (const auto &pos : feasible) {
+		if (std::find(path.cbegin(), path.cend(), pos) == path.cend()) {
+			path.push_back(pos);
+			do_find(pos, current_str, deep, path, result, board, words);
+			path.pop_back();
+		}
+	}
+}
+
+void fist_ch(size_t *map, const vector<string> &data) {
+	for (const auto& str : data)
+		map[str[0] - 'a']++;
+}
+
+std::vector<std::string> solution::find_words(
+	std::vector<std::vector<char>>& board,
+	std::vector<std::string>& words)
+{
+
+	if (board.empty() || board[0].empty() || words.empty())return {};
+
+	unordered_set<string> result;
+	unordered_set<string> words_set(words.cbegin(), words.cend());
+	auto max_len = std::max_element(words.cbegin(), words.cend(),
+		[](const string &a, const string &b) {return a.size() < b.size(); })->size();
+	vector<pos_t> path;
+	trie trip_tree(words);
+
+	for (size_t i = 0; i < board.size(); i++) {
+		for (size_t j = 0; j < board[0].size(); j++) {
+			pos_t pos{ i,j };
+			//if (!ch_map[index(board, pos) - 'a'])continue;
+			path.push_back(pos);
+			do_find(pos, string(), max_len, path, result, board, trip_tree);
+			path.pop_back();
+		}
+	}
+	return vector<string>(result.cbegin(), result.cend());
 }

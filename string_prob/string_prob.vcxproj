@@ -154,6 +154,7 @@
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="solution.h" />
+    <ClInclude Include="trie.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -164,6 +165,7 @@
     </ClCompile>
     <ClCompile Include="solution.cpp" />
     <ClCompile Include="string_prob.cpp" />
+    <ClCompile Include="trie.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

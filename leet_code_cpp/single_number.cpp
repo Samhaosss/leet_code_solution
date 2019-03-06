@@ -23,13 +23,6 @@ int single_number::singleNumber(vector<int>& nums)
 		});*/
 	return std::accumulate(nums.cbegin(), nums.cend(), 0, std::bit_xor<int>());
 }
-// 众数查找 两个方案
-int single_number::majorityElement(vector<int>& nums)
-{
-	return majorityElement_1(nums);
-	//return majorityElement_2(nums);
-}
-// 利用大于n/2的性质
 inline int majorityElement_1(vector<int>& nums) {
 	int same = nums[0], sum(0);
 	for (const auto & num : nums) {
@@ -45,6 +38,14 @@ inline int majorityElement_1(vector<int>& nums) {
 	}
 	return same;
 }
+// 众数查找 两个方案
+int single_number::majorityElement(vector<int>& nums)
+{
+	return majorityElement_1(nums);
+	//return majorityElement_2(nums);
+}
+// 利用大于n/2的性质
+
 // 暴力求解
 inline int majorityElement_2(vector<int>& nums) {
 	using cmap = const pair<int, size_t>&;

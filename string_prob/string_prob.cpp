@@ -1,6 +1,7 @@
 ﻿
 #include "pch.h"
 #include <iostream>
+#include"trie.h"
 #include"solution.h"
 #include<vector>
 #include<cassert>
@@ -127,6 +128,49 @@ void test_first_uniq_char() {
 	assert(test_instance.first_uniq_char(test1) == 0);
 	assert(test_instance.first_uniq_char(test2) == 2);
 }
+
+void test_find_words() {
+	vector<vector<char>> board = {
+		{'b','a','a','b','a','b'},
+		{'a','b','a','a','a','a'},
+		{'a','b','a','a','a','b'},
+		{'a','b','a','b','b','a'},
+		{'a','a','b','b','a','b'},
+		{'a','a','b','b','b','a'},
+		{'a','a','b','a','a','b'}
+	};
+	vector<string> words = { "bbaabaabaaaaabaababaaaaababb",
+		"aabbaaabaaabaabaaaaaabbaaaba",
+		"babbabbbbaabbabaaaaaabbbaaab","bbbababbbbbbbababbabbbbbabaa",
+		"babababbababaabbbbabbbbabbba","abbbbbbaabaaabaaababaabbabba",
+		"aabaabababbbbbbababbbababbaa","aabbbbabbaababaaaabababbaaba",
+		"ababaababaaabbabbaabbaabbaba","abaabbbaaaaababbbaaaaabbbaab",
+		"aabbabaabaabbabababaaabbbaab","baaabaaaabbabaaabaabababaaaa",
+		"aaabbabaaaababbabbaabbaabbaa","abbababbbaababaabbababababbb",
+		"aaabaaaaabaabbabaabbbbaabaaa","abbaabbaaaabbaababababbaabbb",
+		"baabaababbbbaaaabaaabbababbb","aabaababbaababbaaabaabababab",
+		"abbaaabbaabaabaabbbbaabbbbbb","aaababaabbaaabbbaaabbabbabab",
+		"bbababbbabbbbabbbbabbbbbabaa","abbbaabbbaaababbbababbababba",
+		"bbbbbbbabbbababbabaabababaab","aaaababaabbbbabaaaaabaaaaabb",
+		"bbaaabbbbabbaaabbaabbabbaaba","aabaabbbbaabaabbabaabababaaa",
+		"aabbbabbaaaababbbbabbababbbb","babbbaabababbbbbbbbbaabbabaa"
+	};
+	auto result = test_instance.find_words(board, words);
+	for (const auto& str : result)
+		std::cout << str << " ";
+}
+
+void test_trie() {
+	trie test;
+
+	test.insert("apple");
+	assert(test.search("apple"));   // 返回 true
+	assert(!test.search("app"));     // 返回 false
+	assert(test.start_with("app")); // 返回 true
+	test.insert("app");
+	assert(test.search("app"));     // 返回 true
+
+}
 int main() {
 
 	std::cout << "start testing" << std::endl;
@@ -138,5 +182,7 @@ int main() {
 	//test_partition();
 	//test_is_anagram();
 	//test_first_uniq_char();
-	test_reverse_string();
+	//test_reverse_string();
+	test_find_words();
+	//test_trie();
 }
