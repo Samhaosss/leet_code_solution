@@ -12,15 +12,15 @@ using std::string;
 
 solution test_instance;//所有测试使用该实例
 /*
-static const auto io_sync_off = []()
-{
-	// turn off sync
-	std::ios::sync_with_stdio(false);
-	// untie in/out streams
-	std::cin.tie(nullptr);
-	return nullptr;
-}();*/
-// 测试回文判断算法
+	static const auto io_sync_off = []()
+	{
+		// turn off sync
+		std::ios::sync_with_stdio(false);
+		// untie in/out streams
+		std::cin.tie(nullptr);
+		return nullptr;
+	}();*/
+	// 测试回文判断算法
 void test_palindrome() {
 	vector<string> samples{ "A man, a plan, a canal: Panama",
 							"race a car" ,"  ","    " };
