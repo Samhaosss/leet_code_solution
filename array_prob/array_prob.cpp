@@ -116,6 +116,32 @@ void test_increasing_triplet() {
 	assert(test_instance.increasing_triplet(data1));
 	assert(!test_instance.increasing_triplet(data2));
 }
+
+void test_searcg_matrix() {
+	vector<vector<int>> matrix{
+								{1,   4,  7, 11, 15},
+								{2,   5,  8, 12, 19},
+								{3,   6,  9, 16, 22},
+								{10, 13, 14, 17, 24},
+								{18, 21, 23, 26, 30} };
+	assert(test_instance.search_matrix(matrix, 5));
+	assert(!test_instance.search_matrix(matrix, 20));
+}
+
+void test_product_except_self() {
+	vector<int> input{ 1,2,3,4 };
+	vector<int> output{ 24,12,8, 6 };
+	assert(output == test_instance.product_except_self(input));
+}
+
+void test_int_kth_smallest() {
+	vector<vector<int>> matrix{
+	{1,  3,  5},
+	{6, 7, 12},
+	{11, 14, 14} };
+	assert(11 == test_instance.kth_smallest(matrix, 6));
+}
+
 int main()
 {
 	std::cout << "start testing\n" << std::endl;
@@ -127,5 +153,8 @@ int main()
 	//test_shuffle();
 	//gen_random_sequence();
 	//test_intersect();
-	test_increasing_triplet();
+	//test_increasing_triplet();
+	//test_searcg_matrix();
+	//test_product_except_self();
+	test_int_kth_smallest();
 }

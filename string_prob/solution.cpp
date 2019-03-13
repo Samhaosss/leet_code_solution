@@ -348,7 +348,8 @@ vector<string> solution::word_break_sentence(
 	item_to_index(sub_break, break_index);
 
 	gen_sentence(break_index.size() - 1, string(), s, result, break_index, word_dict);
-	std::transform(result.begin(), result.end(), result.begin(), [](string a)->string { a.pop_back(); return a; });
+	std::transform(result.begin(), result.end(), result.begin(),
+		[](string a)->string { a.pop_back(); return a; });
 	return result;
 }
 
