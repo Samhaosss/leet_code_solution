@@ -21,6 +21,12 @@
     <ClInclude Include="solution.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="MinStack.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MedianFinder.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -30,6 +36,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="solution.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MinStack.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MedianFinder.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

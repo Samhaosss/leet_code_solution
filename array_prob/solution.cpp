@@ -204,6 +204,71 @@ int solution::kth_smallest(std::vector<std::vector<int>>& matrix, int k)
 	return find_current_min(matrix);
 }
 
+// 删除左右两侧的0
+inline void trip_zero(vector<int> &nums) {
+	auto be = nums.begin(), end = nums.end();
+	while (be != end && *be == 0)++be;
+	nums.erase(nums.begin(), be);//到这里之前的迭代器已经不能安全使用
+	if (nums.empty())return;
+	auto r_be = nums.begin() + nums.size() - 1, r_end = nums.begin();
+	while (r_be != r_end && *r_be == 0)--r_be;
+	if (*r_be)r_be++;
+	nums.erase(r_be, nums.end());
+}
+vector<vector<int>::const_iterator> inner_zero(vector<int> &nums) {
+	vector<decltype(nums.cbegin())> zeros_iter;
+	decltype(nums.cbegin()) fi = nums.cbegin();
+	while (fi != nums.cend() &&
+		(fi = std::find(fi, nums.cend(), 0)) != nums.cend())
+		zeros_iter.push_back(fi++);
+	zeros_iter.push_back(nums.cend());
+	return zeros_iter;
+}
+// 到这里传入的子序列一定不包含0
+// 所以可以这样考虑 如果最大乘积子序列位于序列中间，则左右剩余子序列各自乘积要么同号，要么异号
+// 如果同号则与当前子序列是最大子序列矛盾 如果异号，则其中为正的部分一定可以为当前子序列乘积做
+// 正贡献 因此最大子序列一定是否当前序列的某一侧开始的
+int sequence_max_product(
+	vector<int>::const_iterator be,
+	vector<int>::const_iterator end
+)
+{
+	auto be_cp = be, end_cp = end - 1;
+	int max = INT_MIN;
+	int accumulate = 1;
+	while (be_cp != end) {
+		accumulate *= *(be_cp++);
+		if (accumulate > max)max = accumulate;
+	}
+	accumulate = 1;
+	while (end_cp != be) {
+		accumulate *= *(end_cp--);
+		if (accumulate > max)max = accumulate;
+	}
+	accumulate *= *(end_cp);
+	if (accumulate > max)max = accumulate;
+	return max;
+}
+int solution::max_product(std::vector<int>& nums)
+{
+	// 一、去除边界0
+	if (nums.empty())return 0;
+	trip_zero(nums);
+	// 二、找出内部0 从而将串分为多个字串
+	auto zeros_iter = inner_zero(nums);
+	// 三、计算每个字串的最大乘积
+	auto last = nums.cbegin();
+	int max = INT_MIN;
+	int tmp;
+	for (auto end : zeros_iter) {
+		tmp = sequence_max_product(last, end);
+		if (tmp > max)max = tmp;
+		last = end;
+	}
+	if (nums.size() != 1 && max < 0)max = 0;
+	return max;
+}
+
 /*
 using vec_iter = vector<int>::const_iterator;
 // 计算从 l_ed-> l_be

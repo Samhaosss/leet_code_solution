@@ -26,6 +26,8 @@ public:
 	std::vector<int> product_except_self(std::vector<int>& nums);
 	// 有序矩阵最小k元素查找
 	int kth_smallest(std::vector<std::vector<int>>& matrix, int k);
+	// 最大乘积子序列
+	int max_product(std::vector<int>& nums);
 
 };
 // 打乱array 遍历每个元素 产生一个不超过数组大小的随机正整数，如果当前元素坐标不等于该数字，

@@ -2,6 +2,7 @@
 #include "solution.h"
 #include<algorithm>
 #include<stack>
+#include<cassert>
 
 using std::stack;
 
@@ -73,11 +74,69 @@ int solution::calculate(string s)
 				value_stack.pop();
 				value_stack.push(n);
 				break;
-			case bigger_or_equal:
+			case bigger:
 				symbol_stack.push(ch);
 				break;
 			}
 		}
 	}
+
 	return 0;
+}
+
+int partition(
+	vector<int>::iterator begin,
+	vector<int>::iterator end
+) {
+	if (begin == end) return -1;
+	int sep = *begin;
+	int curr_left = 0, curr_right = end - begin - 1;
+	while (curr_left != curr_right) {
+		while (curr_left != curr_right && *(begin + curr_right) >= sep)
+			curr_right--;
+		if (curr_left == curr_right)break;
+		*(begin + curr_left++) = *(begin + curr_right);
+		while (curr_left != curr_right && *(begin + curr_left) < sep)
+			curr_left++;
+		if (curr_left == curr_right)break;
+		*(begin + curr_right--) = *(begin + curr_left);
+	}
+	*(begin + curr_left) = sep;
+	return  curr_left;
+}
+int quick_sort_k(
+	vector<int>::iterator begin,
+	vector<int>::iterator end,
+	int k
+) {
+	int curr = partition(begin, end);
+	assert(curr != -1);
+	auto begin_tmp = begin, end_tmp = end;	// 窗口
+	auto target = begin + k;
+	while (begin_tmp + curr != target) {
+		if (begin_tmp + curr > target)//这里的正确性依赖于迭代器比较的语义 
+		{
+			end_tmp = begin_tmp + curr;
+		}
+		else
+		{
+			begin_tmp += curr + 1;
+		}
+		curr = partition(begin_tmp, end_tmp);
+	}
+	return *(begin + k);
+}
+int solution::find_kth_largest(vector<int>& nums, int k)
+{
+	assert(k >= 1 || nums.size() >= k);
+	k = nums.size() - k;
+	return quick_sort_k(nums.begin(), nums.end(), k);
+}
+
+
+
+template<typename IterType, typename ElementType>
+vector < vector < ElementType>> sub_set(IterType begin, IterType end) {
+	vector < vector < ElementType>> result{ {} };
+	do_find_sub_set(begin, end, {}, result);
 }

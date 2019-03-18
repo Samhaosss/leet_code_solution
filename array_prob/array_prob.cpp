@@ -141,7 +141,12 @@ void test_int_kth_smallest() {
 	{11, 14, 14} };
 	assert(11 == test_instance.kth_smallest(matrix, 6));
 }
-
+void test_product() {
+	vector<int> data{ 2,3,-2,4 };
+	assert(test_instance.max_product(data) == 6);
+	vector<int> data2{ -2,0,-1 };
+	assert(test_instance.max_product(data2) == 0);
+}
 int main()
 {
 	std::cout << "start testing\n" << std::endl;
@@ -156,5 +161,6 @@ int main()
 	//test_increasing_triplet();
 	//test_searcg_matrix();
 	//test_product_except_self();
-	test_int_kth_smallest();
+	//test_int_kth_smallest();
+	test_product();
 }

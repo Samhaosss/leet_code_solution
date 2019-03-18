@@ -11,4 +11,5 @@ public:
 	~solution();
 	vector<int> max_sliding_window(vector<int>& nums, int k);
 	int calculate(string s);
+	int find_kth_largest(vector<int>& nums, int k);
 };
