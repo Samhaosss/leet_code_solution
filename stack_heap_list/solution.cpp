@@ -3,7 +3,12 @@
 #include<algorithm>
 #include<stack>
 #include<cassert>
+#include<unordered_map>
+#include<queue>
+#include<cmath>
 
+using std::priority_queue;
+using std::unordered_map;
 using std::stack;
 
 solution::solution()
@@ -131,6 +136,81 @@ int solution::find_kth_largest(vector<int>& nums, int k)
 	assert(k >= 1 || nums.size() >= k);
 	k = nums.size() - k;
 	return quick_sort_k(nums.begin(), nums.end(), k);
+}
+
+struct cmp {
+	bool operator()(const std::pair<int, int> &a, const std::pair<int, int> &b) {
+		return a.second < b.second;
+	}
+};
+vector<int> solution::topK_frequent(vector<int>& nums, int k)
+{
+	unordered_map<int, int> num_count;
+	std::for_each(nums.cbegin(), nums.cend(), [&](int a) {num_count[a]++; });
+	priority_queue<std::pair<int, int>, vector<std::pair<int, int>>, cmp>
+		ordered_num(num_count.begin(), num_count.end());
+	vector<int> result;
+	while (k-- > 0)
+		(result.push_back(ordered_num.top().first), ordered_num.pop());
+	return result;
+}
+inline string::const_iterator pass_symbol(const string &token) {
+	return token[0] == '+' || token[0] == '-' ?
+		token.cbegin() + 1 : token.cbegin();
+}
+bool is_integer(const string &token) {
+	/*if (token.empty())return false;
+	for (char ch : token)
+		if (!(ch >= '0'&&ch <= '9'))
+			return false;
+	return true;*/
+	if (token.empty())return false;
+	auto d_start = pass_symbol(token);
+	return d_start != token.cend() && std::all_of(d_start, token.cend(),
+		[](char a) {return (a >= '0'&&a <= '9'); });
+}
+
+int str_to_integer(const string &token) {
+	auto start = pass_symbol(token);
+	assert(start != token.end());
+	int result = 0;
+	int  base = std::pow(10, (token.cend() - start - 1));
+	int symbol = token[0] == '-' ? -1 : 1;
+	while (start != token.cend()) {
+		result += (*start - '0')*base;
+		base /= 10; ++start;
+	}
+	return result;
+}
+int eval(char op, int a, int b) {
+	switch (op)
+	{
+	case '+':
+		return a + b;
+	case '-':
+		return a - b;
+	case '*':
+		return a * b;
+	case '/':
+		return a / b;
+	}
+}
+int solution::eval_RPN(vector<string>& tokens)
+{
+	stack<int> data;
+	for (const string &token : tokens) {
+		if (is_integer(token))
+			data.push(str_to_integer(token));
+		else
+		{
+			int b = data.top();
+			data.pop();
+			int a = data.top();
+			data.pop();
+			data.push(eval(token[0], a, b));
+		}
+	}
+	return data.top();
 }
 
 

@@ -6,6 +6,7 @@
 #include <iostream>
 #include<cassert>
 #include"MinStack.h"
+#include"NestedIterator.h"
 
 using std::cout;
 using std::endl;
@@ -68,6 +69,32 @@ void test_find_kth_largest() {
 	vector<int> test_data2{ 3,2,3,1,2,4,5,5,6 };
 	assert(test_instance.find_kth_largest(test_data2, 4) == 4);
 }
+
+void test_topK_frequent() {
+	vector<int> test_data{ 1,1,1,2,2,3 };
+	vector<int> result{ 1,2 };
+	assert(result == test_instance.topK_frequent(test_data, 2));
+
+	vector<int> test_data2{ 1 };
+	vector<int> result2{ 1 };
+	assert(result2 == test_instance.topK_frequent(test_data2, 1));
+}
+
+void test_nested_iterator() {
+	NestedInteger one(1);
+	NestedInteger two(2);
+	NestedInteger three(3);
+	NestedInteger nest({ two,three });
+	NestedIterator nt({ one,nest });
+	while (nt.hasNext())std::cout << nt.next() << std::endl;
+}
+
+void test_eval_RPN() {
+	vector<string> exp{ "10", "6", "9", "3", "+", "-11", "*", "/", "*", "17", "+", "5", "+" };
+	assert(test_instance.eval_RPN(exp) == 22);
+	vector<string> exp2{ "4", "13", "5", "/", "+" };
+	assert(test_instance.eval_RPN(exp2) == 6);
+}
 int main()
 {
 	std::cout << "start testing\n";
@@ -78,5 +105,8 @@ int main()
 	sub_set(A, A + 6, result);
 	print_subset(A, 5, 0);-*/
 	//test_min_stack();
-	test_find_kth_largest();
+	//test_find_kth_largest();
+	//test_topK_frequent();
+	//test_nested_iterator();
+	test_eval_RPN();
 }
