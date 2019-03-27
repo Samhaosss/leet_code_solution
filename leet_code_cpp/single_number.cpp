@@ -14,7 +14,7 @@ using std::pair;
 using std::unordered_map;
 using std::unordered_set;
 
-// 一行代码找出只有出现了一次的数字
+// 一行代码找出只有出现了一次的数字 其余数字均出现了两次，这一个特殊的条件
 int single_number::singleNumber(vector<int>& nums)
 {
 	/*	unordered_set<int> data;
@@ -51,7 +51,8 @@ inline int majorityElement_2(vector<int>& nums) {
 	using cmap = const pair<int, size_t>&;
 	unordered_map<int, size_t> count;
 	std::for_each(nums.rbegin(), nums.rend(), [&](int num) {(count[num])++; });
-	auto result = std::max_element(count.cbegin(), count.cend(), [](const cmap& a, const cmap& b) {return a.second > b.second; });
+	auto result = std::max_element(count.cbegin(), count.cend(),
+		[](const cmap& a, const cmap& b) {return a.second > b.second; });
 	return result->first;
 }
 // 搜索二维矩阵， 利用递增特性减少搜索空间

@@ -40,4 +40,5 @@ void NestedIterator::nestIntegerToStack(const NestedInteger & nt)
 		for (auto iter = nt_list.crbegin(); iter != nt_list.crend(); iter++)
 			data_stack.push(*iter);
 	}
+
 }

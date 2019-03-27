@@ -180,7 +180,7 @@ int str_to_integer(const string &token) {
 		result += (*start - '0')*base;
 		base /= 10; ++start;
 	}
-	return result;
+	return result * symbol;
 }
 int eval(char op, int a, int b) {
 	switch (op)
@@ -194,6 +194,7 @@ int eval(char op, int a, int b) {
 	case '/':
 		return a / b;
 	}
+
 }
 int solution::eval_RPN(vector<string>& tokens)
 {

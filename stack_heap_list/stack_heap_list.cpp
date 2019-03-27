@@ -94,7 +94,10 @@ void test_eval_RPN() {
 	assert(test_instance.eval_RPN(exp) == 22);
 	vector<string> exp2{ "4", "13", "5", "/", "+" };
 	assert(test_instance.eval_RPN(exp2) == 6);
+	vector<string> exp3{ "3","-4","+" };
+	assert(test_instance.eval_RPN(exp3) == -1);
 }
+
 int main()
 {
 	std::cout << "start testing\n";
