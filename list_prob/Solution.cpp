@@ -84,3 +84,59 @@ ListNode * Solution::get_intersectionNode(ListNode * headA, ListNode * headB)
 	return intersect_node_2(headA, headB);
 
 }
+
+ListNode * Solution::reverse_list(ListNode * head)
+{
+	if (head == nullptr) return nullptr;
+	ListNode *origin_left = head->next;
+	ListNode *reversed_list = head;
+	head->next = nullptr;
+	while (origin_left) {
+		auto tmp = origin_left->next;
+		origin_left->next = reversed_list;
+		reversed_list = origin_left;
+		origin_left = tmp;
+	}
+	return reversed_list;
+}
+ListNode *list_mid(ListNode *head) {
+	if (!head->next)return nullptr;
+	ListNode *slow_ptr = head, *fast_ptr = head;
+	while (fast_ptr->next&&fast_ptr->next->next) {
+		fast_ptr = fast_ptr->next->next;
+		slow_ptr = slow_ptr->next;
+	}
+	return slow_ptr->next;
+}
+bool Solution::is_palindrome(ListNode * head)
+{
+	if (!head || !head->next)return true;
+	ListNode *mid = list_mid(head);
+	mid = Solution::reverse_list(mid);
+	while (mid) {
+		if (head->val != mid->val)return false;
+		head = head->next;
+		mid = mid->next;
+	}
+	return false;
+}
+
+ListNode * Solution::odd_even_list(ListNode * head)
+{
+	if (!head || !head->next || !head->next->next)return head;
+	ListNode *odd_head = head, *even_head = head->next;
+	ListNode *odd_curr = odd_head, *even_curr = even_head;
+	ListNode *original_list = head->next->next;
+	while (original_list) {
+		odd_curr->next = original_list;
+		odd_curr = odd_curr->next;
+		original_list = original_list->next;
+		if (original_list) {
+			even_curr->next = original_list;
+			even_curr = even_curr->next;
+			original_list = original_list->next;
+		}
+	}
+	odd_curr->next = even_head;
+	return odd_head;
+}

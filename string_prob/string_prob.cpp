@@ -6,7 +6,7 @@
 #include<vector>
 #include<cassert>
 #include<algorithm>
-
+#include"Palindromes.h"
 using std::vector;
 using std::string;
 
@@ -171,6 +171,23 @@ void test_trie() {
 	assert(test.search("app"));     // 返回 true
 
 }
+
+void test_Palindrome() {
+	Palindromes test;
+	assert(!test.isPalindrome("raceacar"));
+	assert(test.isPalindrome(""));
+	assert(!test.isPalindrome("sssadad"));
+	assert(test.isPalindrome("amanaplanacanalpanama"));
+
+	string sentence = "aabcb";
+	vector<vector<string>> result = test.partition(sentence);
+
+	for (const auto &sen : result) {
+		for (const auto& word : sen)
+			std::cout << word << " ";
+		std::cout << std::endl;
+	}
+}
 int main() {
 
 	std::cout << "start testing" << std::endl;
@@ -183,6 +200,7 @@ int main() {
 	//test_is_anagram();
 	//test_first_uniq_char();
 	//test_reverse_string();
-	test_find_words();
+	//test_find_words();
 	//test_trie();
+	test_Palindrome();
 }
